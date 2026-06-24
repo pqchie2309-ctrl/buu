@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hẹn Hò Cùng Anh Nhé? 💖</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti for sweet celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #ffeef2;
+            overflow-x: hidden;
+        }
+        .font-pacifico {
+            font-family: 'Pacifico', cursive;
+        }
+        /* Floating hearts effect */
+        .heart-particle {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUp 4s ease-in infinite;
+            opacity: 0;
+        }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.5) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        /* Transition between steps */
+        .step-panel {
+            display: none;
+        }
+        .step-panel.active {
+            display: block;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        /* Card select effect */
+        .card-checkbox:checked + .card-content {
+            border-color: #ec4899;
+            background-color: #fdf2f8;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(244, 63, 94, 0.2);
+        }
+        /* Beautiful customized Date Picker styling */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            background: transparent;
+            bottom: 0;
+            color: transparent;
+            cursor: pointer;
+            height: auto;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: auto;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4 relative select-none">
+
+    <!-- Hearts Background container -->
+    <div id="hearts-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+    <!-- Toast Notification inside webpage -->
+    <div id="toast-msg" class="fixed top-5 left-1/2 -translate-x-1/2 bg-rose-600 text-white font-bold py-3 px-6 rounded-full shadow-lg z-50 transform translate-y-[-100px] opacity-0 transition-all duration-300 pointer-events-none text-sm md:text-base text-center">
+        Thông báo cực dễ thương ở đây! 🌸
+    </div>
+
+    <!-- Main Card Container -->
+    <div class="bg-white/80 backdrop-blur-md rounded-3xl p-6 md:p-8 shadow-2xl max-w-2xl w-full border border-pink-100 relative z-10 text-center transition-all duration-300">
+        
+        <!-- ================= STEP 1: THE BIG QUESTION ================= -->
+        <div id="step-1" class="step-panel active">
+            <!-- Cute bear visual placeholder -->
+            <div class="flex justify-center mb-6">
+                <div class="relative w-40 h-40 animate-bounce">
+                    <!-- Cute SVG Teddy Bear with Love -->
+                    <svg viewBox="0 0 200 200" class="w-full h-full">
+                        <circle cx="65" cy="55" r="25" fill="#d97706" />
+                        <circle cx="135" cy="55" r="25" fill="#d97706" />
+                        <circle cx="65" cy="55" r="15" fill="#fcd34d" />
+                        <circle cx="135" cy="55" r="15" fill="#fcd34d" />
+                        <circle cx="100" cy="110" r="60" fill="#d97706" />
+                        <ellipse cx="100" cy="120" rx="35" ry="25" fill="#fcd34d" />
+                        <!-- Eyes -->
+                        <circle cx="80" cy="95" r="7" fill="#000" />
+                        <circle cx="120" cy="95" r="7" fill="#000" />
+                        <circle cx="82" cy="93" r="2" fill="#fff" />
+                        <circle cx="122" cy="93" r="2" fill="#fff" />
+                        <!-- Nose and Mouth -->
+                        <polygon points="100,110 93,103 107,103" fill="#000" />
+                        <path d="M 94,115 Q 100,120 106,115" stroke="#000" stroke-width="3" fill="none" />
+                        <!-- Blush -->
+                        <circle cx="70" cy="108" r="8" fill="#f43f5e" opacity="0.5" />
+                        <circle cx="130" cy="108" r="8" fill="#f43f5e" opacity="0.5" />
+                        <!-- Big Heart in hands -->
+                        <path d="M 100,125 C 100,125 80,105 80,95 C 80,87 87,80 95,80 C 100,80 100,85 100,85 C 100,85 100,80 105,80 C 113,80 120,87 120,95 C 120,105 100,125 100,125 Z" fill="#f43f5e" transform="translate(0, 45) scale(0.6) translate(-65, -80)" />
+                    </svg>
+                </div>
+            </div>
+            <h1 class="font-pacifico text-3xl md:text-4xl text-pink-600 mb-4">Hi xinh gái! 💖</h1>
+            <p class="text-gray-600 text-lg md:text-xl mb-8 font-semibold">đi chơi với anh nhé 👉👈</p>
+            
+            <!-- Side-by-side Button Area to prevent stacking -->
+            <div class="relative w-full h-28 flex items-center justify-between px-4 sm:px-12" id="buttons-area">
+                <!-- Left side: YES -->
+                <button onclick="nextStep(2)" class="px-6 py-4 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold text-base md:text-lg rounded-full shadow-lg hover:shadow-pink-200 hover:-translate-y-1 transition duration-200 w-[45%] z-10">
+                    Có chứ! 🥰
+                </button>
+                <!-- Right side: NO (with dynamic absolute position logic on touch/hover) -->
+                <button id="btn-no" class="absolute right-4 sm:right-12 px-6 py-4 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold text-base md:text-lg rounded-full shadow transition duration-200 w-[45%] max-w-[200px]" style="transition: all 0.15s ease;">
+                    Hông nha 😜
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= STEP 2: CHOOSE FOOD ================= -->
+        <div id="step-2" class="step-panel">
+            <h2 class="font-pacifico text-2xl md:text-3xl text-pink-600 mb-2">Chúng mình sẽ ăn gì nhỉ? 🍕</h2>
+            <p class="text-pink-500 text-sm font-semibold mb-6">ăn nhìu quá sao mà đi chơi các chỗ khác 😜</p>
+            
+            <!-- Food Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8 max-h-[350px] overflow-y-auto p-2">
+                
+                <!-- BBQ -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="food" value="Đồ nướng thơm lừng" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- BBQ SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <rect x="20" y="70" width="60" height="15" rx="5" fill="#475569" />
+                            <line x1="30" y1="85" x2="25" y2="95" stroke="#475569" stroke-width="4" stroke-linecap="round" />
+                            <line x1="70" y1="85" x2="75" y2="95" stroke="#475569" stroke-width="4" stroke-linecap="round" />
+                            <path d="M 35,45 L 35,70 M 50,45 L 50,70 M 65,45 L 65,70" stroke="#94a3b8" stroke-width="3" />
+                            <rect x="35" y="10" width="30" height="4" rx="2" fill="#e2e8f0" transform="rotate(45 50 50)" />
+                            <rect x="42" y="25" width="16" height="16" rx="4" fill="#ef4444" transform="rotate(45 50 50)" />
+                            <rect x="52" y="35" width="14" height="14" rx="2" fill="#eab308" transform="rotate(45 50 50)" />
+                            <rect x="32" y="15" width="16" height="16" rx="4" fill="#22c55e" transform="rotate(45 50 50)" />
+                            <path d="M 45,35 Q 40,25 45,15" stroke="#cbd5e1" stroke-width="2" fill="none" stroke-linecap="round" />
+                            <path d="M 55,35 Q 50,25 55,15" stroke="#cbd5e1" stroke-width="2" fill="none" stroke-linecap="round" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Đồ Nướng 🍖</span>
+                    </div>
+                </label>
+
+                <!-- Sushi -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="food" value="Sushi tươi ngon" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- Sushi SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <ellipse cx="50" cy="75" rx="40" ry="15" fill="#e2e8f0" />
+                            <rect x="25" y="45" width="22" height="22" rx="4" fill="#1e293b" />
+                            <circle cx="36" cy="56" r="8" fill="#fff" />
+                            <circle cx="36" cy="56" r="4" fill="#f97316" />
+                            <ellipse cx="65" cy="50" rx="18" ry="10" fill="#fff" />
+                            <path d="M 47,48 Q 65,35 83,48 Q 65,60 47,48 Z" fill="#f87171" />
+                            <path d="M 52,43 Q 63,38 72,43 M 58,50 Q 67,45 76,50" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+                            <rect x="58" y="52" width="14" height="6" rx="1" fill="#1e293b" transform="rotate(10 65 52)" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Sushi 🍣</span>
+                    </div>
+                </label>
+
+                <!-- Pizza -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="food" value="Pizza đẫm phô mai" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- Pizza SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <path d="M 50,15 L 80,75 C 80,75 50,85 20,75 Z" fill="#facc15" />
+                            <path d="M 20,75 Q 50,85 80,75" stroke="#d97706" stroke-width="8" stroke-linecap="round" fill="none" />
+                            <circle cx="40" cy="45" r="5" fill="#dc2626" />
+                            <circle cx="60" cy="55" r="5" fill="#dc2626" />
+                            <circle cx="50" cy="30" r="4" fill="#dc2626" />
+                            <circle cx="42" cy="65" r="4" fill="#dc2626" />
+                            <path d="M 32,35 Q 35,32 38,35" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round" />
+                            <path d="M 62,40 Q 65,37 68,40" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round" />
+                            <path d="M 52,60 Q 55,57 58,60" stroke="#16a34a" stroke-width="2" fill="none" stroke-linecap="round" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Pizza 🍕</span>
+                    </div>
+                </label>
+
+                <!-- Salad -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="food" value="Salad healthy" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- Salad SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <path d="M 15,45 C 15,75 85,75 85,45 Z" fill="#38bdf8" />
+                            <rect x="25" y="70" width="50" height="6" rx="3" fill="#0284c7" />
+                            <circle cx="35" cy="40" r="14" fill="#4ade80" />
+                            <circle cx="65" cy="40" r="14" fill="#4ade80" />
+                            <circle cx="50" cy="35" r="16" fill="#22c55e" />
+                            <circle cx="40" cy="42" r="8" fill="#ef4444" />
+                            <circle cx="40" cy="42" r="5" fill="#f87171" />
+                            <ellipse cx="60" cy="44" rx="8" ry="6" fill="#fff" transform="rotate(-15 60 44)" />
+                            <ellipse cx="60" cy="44" rx="4" ry="3" fill="#eab308" transform="rotate(-15 60 44)" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Salad 🥗</span>
+                    </div>
+                </label>
+
+                <!-- Cookie -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="food" value="Bánh ngọt & Cookie" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- Cookie SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <circle cx="50" cy="50" r="35" fill="#d97706" />
+                            <circle cx="85" cy="50" r="12" fill="#fff" />
+                            <circle cx="85" cy="50" r="12" fill="#ffeef2" opacity="0.5" />
+                            <circle cx="40" cy="35" r="5" fill="#451a03" />
+                            <circle cx="60" cy="32" r="4" fill="#451a03" />
+                            <circle cx="32" cy="55" r="5" fill="#451a03" />
+                            <circle cx="52" cy="52" r="6" fill="#451a03" />
+                            <circle cx="45" cy="70" r="4" fill="#451a03" />
+                            <circle cx="65" cy="62" r="5" fill="#451a03" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Cookie 🍪</span>
+                    </div>
+                </label>
+
+                <!-- Hotpot / Lẩu -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="food" value="Lẩu thái cay nồng" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- Hotpot SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <path d="M 20,40 L 80,40 L 75,75 C 75,78 70,82 65,82 L 35,82 C 30,82 25,78 21,75 Z" fill="#94a3b8" />
+                            <rect x="15" y="35" width="70" height="6" rx="3" fill="#475569" />
+                            <path d="M 15,45 C 10,45 10,55 15,55" stroke="#475569" stroke-width="4" fill="none" />
+                            <path d="M 85,45 C 90,45 90,55 85,55" stroke="#475569" stroke-width="4" fill="none" />
+                            <path d="M 20,40 Q 50,48 80,40" stroke="#ef4444" stroke-width="4" fill="none" />
+                            <path d="M 35,25 Q 40,15 35,5" stroke="#cbd5e1" stroke-width="3" fill="none" stroke-linecap="round" />
+                            <path d="M 50,25 Q 45,15 50,5" stroke="#cbd5e1" stroke-width="3" fill="none" stroke-linecap="round" />
+                            <path d="M 65,25 Q 70,15 65,5" stroke="#cbd5e1" stroke-width="3" fill="none" stroke-linecap="round" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Lẩu 🍲</span>
+                    </div>
+                </label>
+
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center">
+                <button onclick="nextStep(1)" class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-full transition duration-200">
+                    Trở lại
+                </button>
+                <button onclick="saveFoodAndNext()" class="px-8 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-full shadow-md hover:shadow-pink-200 hover:-translate-y-0.5 transition duration-200">
+                    Tiếp tục nha ✨
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= STEP 3: CHOOSE ACTIVITY ================= -->
+        <div id="step-3" class="step-panel">
+            <h2 class="font-pacifico text-2xl md:text-3xl text-pink-600 mb-2">Ăn xong mình đi đâu nhỉ? 💃</h2>
+            <p class="text-pink-500 text-sm font-semibold mb-6">có đủ thời gian chơi hết k z cô nàng 🤔</p>
+            
+            <!-- Activity Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8 max-h-[350px] overflow-y-auto p-2">
+                
+                <!-- Movie -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="activity" value="Xem phim rạp" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- Movie SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <path d="M 30,40 L 70,40 L 65,90 L 35,90 Z" fill="#ef4444" />
+                            <path d="M 38,40 L 42,90 M 50,40 L 50,90 M 62,40 L 58,90" stroke="#fff" stroke-width="4" />
+                            <circle cx="35" cy="32" r="8" fill="#fef08a" />
+                            <circle cx="50" cy="28" r="10" fill="#fef08a" />
+                            <circle cx="65" cy="32" r="8" fill="#fef08a" />
+                            <circle cx="42" cy="35" r="7" fill="#fff" />
+                            <circle cx="58" cy="35" r="7" fill="#fff" />
+                            <rect x="25" y="55" width="50" height="15" rx="3" fill="#1e293b" />
+                            <rect x="28" y="58" width="20" height="9" rx="1" fill="#ef4444" />
+                            <rect x="52" y="58" width="20" height="9" rx="1" fill="#3b82f6" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Xem Phim 🎬</span>
+                    </div>
+                </label>
+
+                <!-- Cafe -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="activity" value="Đi uống cà phê trò chuyện" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- Cafe SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <path d="M 25,40 L 75,40 C 75,65 65,80 50,80 C 35,80 25,65 25,40 Z" fill="#f43f5e" />
+                            <path d="M 72,48 C 82,48 82,62 72,62" stroke="#f43f5e" stroke-width="5" fill="none" />
+                            <ellipse cx="50" cy="85" rx="35" ry="5" fill="#cbd5e1" />
+                            <path d="M 50,28 C 50,28 44,18 44,13 C 44,9 47,6 50,10 C 53,6 56,9 56,13 C 56,18 50,28 50,28 Z" fill="#fda4af" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Cà Phê ☕</span>
+                    </div>
+                </label>
+
+                <!-- Park -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="activity" value="Dạo công viên lãng mạn" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- Park SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <rect x="46" y="55" width="8" height="30" fill="#78350f" />
+                            <circle cx="50" cy="40" r="22" fill="#22c55e" />
+                            <circle cx="38" cy="48" r="15" fill="#4ade80" />
+                            <circle cx="62" cy="48" r="15" fill="#4ade80" />
+                            <line x1="30" y1="75" x2="70" y2="75" stroke="#475569" stroke-width="4" stroke-linecap="round" />
+                            <line x1="35" y1="75" x2="35" y2="85" stroke="#475569" stroke-width="3" />
+                            <line x1="65" y1="75" x2="65" y2="85" stroke="#475569" stroke-width="3" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Công Viên 🌳</span>
+                    </div>
+                </label>
+
+                <!-- Museum -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="activity" value="Đi bảo tàng nghệ thuật" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- Museum SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <rect x="15" y="75" width="70" height="8" rx="2" fill="#64748b" />
+                            <polygon points="50,15 15,35 85,35" fill="#475569" />
+                            <rect x="23" y="35" width="8" height="40" fill="#94a3b8" />
+                            <rect x="46" y="35" width="8" height="40" fill="#94a3b8" />
+                            <rect x="69" y="35" width="8" height="40" fill="#94a3b8" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Bảo Tàng 🏛️</span>
+                    </div>
+                </label>
+
+                <!-- Netflix n Chill -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="activity" value="Netflix & Chill tại nhà" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- Netflix n Chill SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <rect x="15" y="25" width="70" height="45" rx="5" fill="#1e293b" />
+                            <polygon points="50,70 40,82 60,82" fill="#475569" />
+                            <polygon points="45,40 45,56 60,48" fill="#ef4444" />
+                            <path d="M 18,65 Q 25,62 30,68" stroke="#facc15" stroke-width="2" fill="none" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Netflix & Chill 🍿</span>
+                    </div>
+                </label>
+
+                <!-- Karaoke -->
+                <label class="cursor-pointer relative">
+                    <input type="checkbox" name="activity" value="Đi hát Karaoke bung xõa" class="sr-only card-checkbox">
+                    <div class="card-content bg-white border-2 border-pink-100 rounded-2xl p-4 flex flex-col items-center gap-2 hover:border-pink-300 transition-all duration-200">
+                        <!-- Karaoke SVG -->
+                        <svg viewBox="0 0 100 100" class="w-16 h-16">
+                            <line x1="50" y1="50" x2="50" y2="85" stroke="#64748b" stroke-width="4" />
+                            <ellipse cx="50" cy="85" rx="15" ry="5" fill="#475569" />
+                            <circle cx="50" cy="30" r="14" fill="#94a3b8" />
+                            <circle cx="50" cy="30" r="11" fill="#cbd5e1" />
+                            <line x1="39" y1="30" x2="61" y2="30" stroke="#475569" stroke-width="1.5" />
+                            <line x1="50" y1="19" x2="50" y2="41" stroke="#475569" stroke-width="1.5" />
+                            <path d="M 46,42 L 54,42 L 52,60 L 48,60 Z" fill="#334155" />
+                            <path d="M 70,20 L 70,10 L 82,14 L 82,24" stroke="#ec4899" stroke-width="2" fill="none" />
+                            <circle cx="67" cy="20" r="3" fill="#ec4899" />
+                            <circle cx="79" cy="24" r="3" fill="#ec4899" />
+                        </svg>
+                        <span class="font-semibold text-gray-700 text-sm">Karaoke 🎤</span>
+                    </div>
+                </label>
+
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center">
+                <button onclick="nextStep(2)" class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-full transition duration-200">
+                    Trở lại
+                </button>
+                <button onclick="saveActivityAndNext()" class="px-8 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-full shadow-md hover:shadow-pink-200 hover:-translate-y-0.5 transition duration-200">
+                    Chọn xong rồi 🥰
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= STEP 4: CHOOSE DATE (DATE PICKER) ================= -->
+        <div id="step-4" class="step-panel">
+            <h2 class="font-pacifico text-2xl md:text-3xl text-pink-600 mb-2">Thế khi nào em rảnh thế? 📅</h2>
+            <p class="text-gray-500 text-sm mb-6">Em hãy chọn một ngày thật đẹp trên lịch nhé!</p>
+            
+            <div class="flex flex-col items-center justify-center mb-8">
+                <!-- Customized Cozy Date Input Container -->
+                <div class="relative w-full max-w-sm bg-pink-50/50 border-2 border-pink-200 rounded-3xl p-6 transition-all duration-300 hover:border-pink-300">
+                    <div class="flex items-center justify-center gap-3 mb-4">
+                        <span class="text-4xl">📅</span>
+                        <div class="text-left">
+                            <span class="text-xs text-pink-500 font-bold tracking-wider uppercase">Lịch hẹn hò</span>
+                            <h3 id="display-date-label" class="text-lg font-extrabold text-gray-800">Chọn một ngày của chúng mình</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="relative">
+                        <input type="date" id="date-picker" onchange="updateDateDisplay(this.value)" class="w-full bg-white text-center text-gray-800 font-bold py-3.5 px-4 rounded-2xl border border-pink-100 shadow-sm focus:outline-none focus:ring-2 focus:ring-pink-400 text-lg cursor-pointer">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between items-center">
+                <button onclick="nextStep(3)" class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-full transition duration-200">
+                    Trở lại
+                </button>
+                <button onclick="finishPlanning()" class="px-8 py-3 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold rounded-full shadow-md hover:shadow-pink-200 hover:-translate-y-0.5 transition duration-200">
+                    Lên lịch hẹn hò thôi! 🎉
+                </button>
+            </div>
+        </div>
+
+        <!-- ================= STEP 5: FINAL CONFIRMATION ================= -->
+        <div id="step-5" class="step-panel">
+            <div class="flex justify-center mb-4">
+                <div class="w-24 h-24 text-pink-500 animate-pulse">
+                    <!-- Heart-Envelope SVG -->
+                    <svg viewBox="0 0 100 100" class="w-full h-full">
+                        <path d="M 10,25 Q 50,55 90,25 L 90,75 C 90,80 85,85 80,85 L 20,85 C 15,85 10,80 10,75 Z" fill="#fbcfe8" />
+                        <polygon points="10,25 50,55 90,25 50,15" fill="#f472b6" />
+                        <path d="M 50,60 C 50,60 35,45 35,37 C 35,31 40,26 46,26 C 50,26 50,30 50,30 C 50,30 50,26 54,26 C 60,26 65,31 65,37 C 65,45 50,60 50,60 Z" fill="#ef4444" transform="translate(0, 10)" />
+                    </svg>
+                </div>
+            </div>
+            
+            <h2 class="font-pacifico text-3xl text-pink-600 mb-2">Thế là tụi mình có hẹn nhé! 🥰</h2>
+            <p class="text-gray-600 font-semibold mb-6">Anh đã lưu lại kế hoạch siêu tuyệt vời này rồi nè:</p>
+
+            <!-- Invitation Summary Card -->
+            <div class="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-100 rounded-3xl p-6 text-left mb-8 space-y-4 shadow-inner">
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">🍽️</span>
+                    <div>
+                        <h4 class="font-bold text-pink-700">Thực đơn mong muốn:</h4>
+                        <p id="summary-food" class="text-gray-700 font-medium">Chưa chọn món nào</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">🗺️</span>
+                    <div>
+                        <h4 class="font-bold text-pink-700">Nơi chúng mình đi:</h4>
+                        <p id="summary-activity" class="text-gray-700 font-medium">Chưa chọn nơi nào</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3">
+                    <span class="text-2xl">⏰</span>
+                    <div>
+                        <h4 class="font-bold text-pink-700">Thời gian lý tưởng:</h4>
+                        <p id="summary-date" class="text-gray-700 font-medium">Chưa chọn ngày</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-gray-500 italic text-sm mb-6">"Hẹn gặp em nhé, mọi chi tiết khác cứ để anh chuẩn bị cho thật chu đáo nha! 😘"</p>
+            
+            <button onclick="resetApp()" class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-500 font-bold rounded-full transition duration-200">
+                Làm lại từ đầu 🔄
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Script Section -->
+    <script>
+        // State variables
+        let selectedFood = [];
+        let selectedActivity = [];
+        let selectedDate = '';
+
+        // Dynamic Toast notification helper
+        function showToast(message) {
+            const toast = document.getElementById('toast-msg');
+            toast.innerText = message;
+            toast.style.transform = 'translateY(0)';
+            toast.style.opacity = '1';
+
+            setTimeout(() => {
+                toast.style.transform = 'translateY(-100px)';
+                toast.style.opacity = '0';
+            }, 2500);
+        }
+
+        // Keep generating hearts background
+        function createHeart() {
+            const container = document.getElementById('hearts-container');
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            
+            const size = Math.random() * 20 + 10;
+            heart.style.width = `${size}px`;
+            heart.style.height = `${size}px`;
+            heart.style.left = `${Math.random() * 100}vw`;
+            heart.style.animationDuration = `${Math.random() * 2 + 3}s`; 
+            
+            const colors = ['#f43f5e', '#ec4899', '#f472b6', '#fda4af', '#fb7185'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            heart.innerHTML = `
+                <svg viewBox="0 0 100 100" fill="${randomColor}">
+                    <path d="M 50,85 C 50,85 15,55 15,35 C 15,20 28,10 40,10 C 50,10 50,20 50,20 C 50,20 50,10 60,10 C 72,10 85,20 85,35 C 85,55 50,85 50,85 Z" />
+                </svg>
+            `;
+            
+            container.appendChild(heart);
+            setTimeout(() => heart.remove(), 5000);
+        }
+        setInterval(createHeart, 300);
+
+        // Escape logic for "No" button
+        const btnNo = document.getElementById('btn-no');
+        const buttonsArea = document.getElementById('buttons-area');
+
+        function escapeButton() {
+            const parentRect = buttonsArea.getBoundingClientRect();
+            const btnRect = btnNo.getBoundingClientRect();
+
+            const maxW = parentRect.width - btnRect.width;
+            const maxH = parentRect.height - btnRect.height;
+
+            // Generate safe coordinates to jump cleanly inside and around step-1 boundaries
+            let randomX = Math.floor(Math.random() * (maxW - 10)) + 5;
+            let randomY = Math.floor(Math.random() * (maxH + 60)) - 30; // Let it jump slightly vertically for variety
+
+            btnNo.style.position = 'absolute';
+            btnNo.style.right = 'auto';
+            btnNo.style.left = `${randomX}px`;
+            btnNo.style.top = `${randomY}px`;
+        }
+
+        btnNo.addEventListener('mouseover', escapeButton);
+        btnNo.addEventListener('touchstart', (e) => {
+            e.preventDefault(); 
+            escapeButton();
+        });
+
+        // Limit checkers selection
+        document.querySelectorAll('input[name="food"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const checked = document.querySelectorAll('input[name="food"]:checked');
+                if (checked.length > 2) {
+                    cb.checked = false; // Undo action
+                    showToast("Em chọn tối đa 2 món thui, ăn nhìu quá sao đi chơi chỗ khác được nè! 🥺");
+                }
+            });
+        });
+
+        document.querySelectorAll('input[name="activity"]').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const checked = document.querySelectorAll('input[name="activity"]:checked');
+                if (checked.length > 3) {
+                    cb.checked = false; // Undo action
+                    showToast("Chọn tối đa 3 chỗ thui, có đủ thời gian chơi hết k z cô nàng! 🥰");
+                }
+            });
+        });
+
+        // Initialize and restrict date picker to starting from today
+        window.addEventListener('DOMContentLoaded', () => {
+            const datePicker = document.getElementById('date-picker');
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1; // Months start at 0!
+            let dd = today.getDate();
+
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+
+            const formattedToday = yyyy + '-' + mm + '-' + dd;
+            datePicker.min = formattedToday;
+            datePicker.value = formattedToday;
+            updateDateDisplay(formattedToday);
+        });
+
+        // Update the date picker label UI nicely
+        function updateDateDisplay(val) {
+            if (!val) return;
+            const dateObj = new Date(val);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const localeDateStr = dateObj.toLocaleDateString('vi-VN', options);
+            document.getElementById('display-date-label').innerText = localeDateStr;
+        }
+
+        // Navigation Steps Handler
+        function nextStep(stepNumber) {
+            document.querySelectorAll('.step-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            const targetStep = document.getElementById(`step-${stepNumber}`);
+            if (targetStep) {
+                targetStep.classList.add('active');
+            }
+        }
+
+        // Save selected food and validate
+        function saveFoodAndNext() {
+            const checkedBoxes = document.querySelectorAll('input[name="food"]:checked');
+            selectedFood = Array.from(checkedBoxes).map(cb => cb.value);
+            
+            if (selectedFood.length === 0) {
+                showToast("Em chọn ít nhất 1 món ăn nhé! 🍱");
+                return;
+            }
+            nextStep(3);
+        }
+
+        // Save selected activities and validate
+        function saveActivityAndNext() {
+            const checkedBoxes = document.querySelectorAll('input[name="activity"]:checked');
+            selectedActivity = Array.from(checkedBoxes).map(cb => cb.value);
+            
+            if (selectedActivity.length === 0) {
+                showToast("Hãy lựa chọn ít nhất một hoạt động nhé em! ✨");
+                return;
+            }
+            nextStep(4);
+        }
+
+        // Complete planning and compile data
+        function finishPlanning() {
+            const dateVal = document.getElementById('date-picker').value;
+            if (!dateVal) {
+                showToast("Em hãy chọn một ngày hẹn hò thích hợp nhé! 📅");
+                return;
+            }
+
+            const dateObj = new Date(dateVal);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            selectedDate = dateObj.toLocaleDateString('vi-VN', options);
+
+            // Update Summary Screen
+            document.getElementById('summary-food').innerText = selectedFood.join(', ');
+            document.getElementById('summary-activity').innerText = selectedActivity.join(', ');
+            document.getElementById('summary-date').innerText = selectedDate;
+
+            nextStep(5);
+            triggerCelebration();
+        }
+
+        // Confetti celebration
+        function triggerCelebration() {
+            const duration = 3.5 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 3,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#f43f5e', '#ec4899', '#fda4af']
+                });
+                confetti({
+                    particleCount: 3,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#f43f5e', '#ec4899', '#fda4af']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        // Reset App flow
+        function resetApp() {
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            btnNo.style.position = '';
+            btnNo.style.left = '';
+            btnNo.style.top = '';
+            
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date-picker').value = today;
+            updateDateDisplay(today);
+
+            nextStep(1);
+        }
+    </script>
+</body>
+</html>
